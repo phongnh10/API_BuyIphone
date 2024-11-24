@@ -43,24 +43,26 @@ mongoose
   .catch((err) => console.log(">>>>>>>>> DB Error: ", err));
 
 // Tạo cron job mỗi 10 phút
-// cron.schedule("*/10 * * * *", async () => {
-//   try {
-//     // Gọi đến một endpoint của server
-//     const response = await axios.get("http://localhost:3000/category");
-//     console.log("Cron job gọi server thành công!", response.status);
-//   } catch (error) {
-//     console.error("Có lỗi xảy ra khi gọi server:", error.message);
-//   }
-// });
+cron.schedule("*/10 * * * *", async () => {
+  try {
+    // Gọi đến một endpoint của server
+    const response = await axios.get(
+      "https://api-buyiphone.onrender.com/category"
+    );
+    console.log("Cron job gọi server thành công!", response.status);
+  } catch (error) {
+    console.error("Có lỗi xảy ra khi gọi server:", error.message);
+  }
+});
 
 // Định nghĩa các route
 app.use("/user", userRouter);
 app.use("/category", categoryRouter);
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+// const PORT = process.env.PORT || 3000;
+// app.listen(PORT, () => {
+//   console.log(`Server is running on http://localhost:${PORT}`);
+// });
 // Xử lý lỗi 404
 app.use(function (req, res, next) {
   next(createError(404));
