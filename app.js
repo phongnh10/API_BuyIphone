@@ -6,7 +6,7 @@ var logger = require("morgan");
 
 // Mongoose và kết nối cơ sở dữ liệu
 const mongoose = require("mongoose");
-require("dotenv").config(); // Sử dụng biến môi trường để bảo mật thông tin nhạy cảm
+require("dotenv").config();
 
 // Tải models
 require("./models/user");
@@ -29,15 +29,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-// Kết nối MongoDB  mongodb+srv://phongnh10:G3JPLpKxkWLJrudJ@api-phongnh10.cla57.mongodb.net/
+// Kết nối MongoDB
 mongoose
   .connect(
     process.env.MONGO_URI ||
       "mongodb+srv://phongnh10:G3JPLpKxkWLJrudJ@api-phongnh10.cla57.mongodb.net/BuyIphone",
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    }
+    {}
   )
   .then(() => console.log(">>>>>>>>>> DB Connected!!!!!!"))
   .catch((err) => console.log(">>>>>>>>> DB Error: ", err));
@@ -45,7 +42,6 @@ mongoose
 // Tạo cron job mỗi 10 phút
 cron.schedule("*/10 * * * *", async () => {
   try {
-    // Gọi đến một endpoint của server
     const response = await axios.get(
       "https://api-buyiphone.onrender.com/category"
     );
@@ -59,10 +55,12 @@ cron.schedule("*/10 * * * *", async () => {
 app.use("/user", userRouter);
 app.use("/category", categoryRouter);
 
-// const PORT = process.env.PORT || 3000;
-// app.listen(PORT, () => {
-//   console.log(`Server is running on http://localhost:${PORT}`);
-// });
+// Cấu hình port
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
+
 // Xử lý lỗi 404
 app.use(function (req, res, next) {
   next(createError(404));
@@ -74,7 +72,7 @@ app.use(function (err, req, res, next) {
   res.locals.error = req.app.get("env") === "development" ? err : {};
 
   res.status(err.status || 500);
-  res.render("error");
+  res.send("Có lỗi xảy ra: " + err.message);
 });
 
 module.exports = app;
