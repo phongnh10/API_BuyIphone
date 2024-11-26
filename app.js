@@ -11,6 +11,7 @@ require("dotenv").config();
 // Tải models
 require("./models/user");
 require("./models/category");
+require("./models/product");
 
 // Thư viện axios và node-cron
 const axios = require("axios");
@@ -19,6 +20,7 @@ const cron = require("node-cron");
 // Import router
 var userRouter = require("./routes/user");
 var categoryRouter = require("./routes/category");
+var productRouter = require("./routes/product");
 
 var app = express();
 
@@ -54,6 +56,7 @@ cron.schedule("*/10 * * * *", async () => {
 // Định nghĩa các route
 app.use("/user", userRouter);
 app.use("/category", categoryRouter);
+app.use("/product", productRouter);
 
 // Cấu hình port
 const PORT = process.env.PORT || 3000;
